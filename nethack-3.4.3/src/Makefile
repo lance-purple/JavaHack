@@ -284,8 +284,8 @@ WINLIB = $(WINTTYLIB)
 #
 # IRIX 4.0.x needs -lsun if NIS (YP) is being used for passwd file lookup
 # LIBS = -lsun
-#
-LIBS =
+
+LIBS = -L/cygdrive/c/Program\ Files/Java/jdk1.8.0_40/jre/bin/server -ljvm
 
 # make NetHack
 GAME     = nethack

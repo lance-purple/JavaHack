@@ -3,6 +3,9 @@
 
 #include "hack.h"
 
+#include <jni.h>
+#include <limits.h>
+
 #ifdef JAVA_GRAPHICS
 
 #include "winjava.h"
@@ -11,6 +14,9 @@
 void win_java_init(void) {
     win_tty_init();
 }
+
+JNIEnv* jni_env;
+JavaVM* java_vm;
 
 /* Interface definition, for windows.c */
 
@@ -64,6 +70,37 @@ struct window_procs java_procs = {
 
 void java_init_nhwindows(int* argcp, char** argv) {
     tty_init_nhwindows(argcp, argv);
+
+    const char* java_home = getenv("JAVA_HOME");
+    if (NULL != java_home) {
+
+        char java_library_path[PATH_MAX];
+        sprintf(java_library_path, "-Djava.library.path=%s/lib/", java_home);
+
+        char java_class_path[PATH_MAX];
+        sprintf(java_class_path, "-Djava.class.path=%s", getenv("CLASSPATH"));
+
+        JavaVMOption options[3];
+        options[0].optionString = java_library_path;
+        options[1].optionString = java_class_path;
+        options[2].optionString = "-verbose:jni";
+
+        JavaVMInitArgs vm_args;
+        vm_args.version = JNI_VERSION_1_8;
+        vm_args.nOptions = 2;
+        vm_args.options = options;
+        vm_args.ignoreUnrecognized = 0;
+
+        int jc = JNI_CreateJavaVM(&java_vm, (void**)&jni_env, &vm_args);
+        if (JNI_OK != jc) {
+            printf("\nFailed to Launch JVM\n");
+            exit(jc);
+        }
+    }
+    else {
+        fprintf(stderr, "\nJAVA_HOME must be specified\n");
+        exit(1);
+    }
 }
 
 void java_player_selection(void) {
@@ -80,6 +117,14 @@ void java_get_nh_event(void) {
 
 void java_exit_nhwindows(const char* str) {
     tty_exit_nhwindows(str);
+
+    if (NULL != java_vm) {
+        int jc = (*java_vm)->DestroyJavaVM(java_vm);
+        if (0 != jc) {
+            fprintf(stderr, "\nFailed to destroy JVM: %d\n", jc);
+        }
+fprintf(stderr, "\nLJP destroyed JVM\n");
+    }
 }
 
 void java_suspend_nhwindows(const char* str) {

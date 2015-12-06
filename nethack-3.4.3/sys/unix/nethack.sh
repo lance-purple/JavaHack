@@ -6,6 +6,16 @@ export HACKDIR
 HACK=$HACKDIR/nethack
 MAXNROFPLAYERS=4
 
+if [ -z "$JAVA_HOME" ]
+then
+	echo "JAVA_HOME must be specified"
+else
+        if [[ $PATH != ?(*:)$JAVA_HOME/bin/server?(:*) ]]
+	then
+                PATH="$PATH:$JAVA_HOME/bin/server"
+        fi
+fi
+
 # Since Nethack.ad is installed in HACKDIR, add it to XUSERFILESEARCHPATH
 case "x$XUSERFILESEARCHPATH" in
 x)	XUSERFILESEARCHPATH="$HACKDIR/%N.ad"
