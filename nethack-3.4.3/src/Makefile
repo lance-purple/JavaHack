@@ -173,6 +173,9 @@ CXX=g++
 WINTTYSRC = ../win/tty/getline.c ../win/tty/termcap.c ../win/tty/topl.c \
 	../win/tty/wintty.c
 WINTTYOBJ = getline.o termcap.o topl.o wintty.o
+# files for Java UI
+WINJAVASRC = ../win/java/winjava.c
+WINJAVAOBJ = winjava.o
 #
 # files for an X11 port
 # (tile.c is a generated source file)
@@ -214,8 +217,8 @@ WINBEOBJ =
 
 #
 #
-WINSRC = $(WINTTYSRC)
-WINOBJ = $(WINTTYOBJ)
+WINSRC = $(WINTTYSRC) $(WINJAVASRC)
+WINOBJ = $(WINTTYOBJ) $(WINJAVAOBJ)
 
 # on some systems the termcap library is in -ltermcap or -lcurses
 # on 386 Xenix, the -ltermlib tputs() seems not to work; use -lcurses instead
@@ -605,6 +608,8 @@ topl.o: ../win/tty/topl.c $(HACK_H) ../include/tcap.h
 wintty.o: ../win/tty/wintty.c $(HACK_H) ../include/dlb.h \
 		../include/patchlevel.h ../include/tcap.h
 	$(CC) $(CFLAGS) -c ../win/tty/wintty.c
+winjava.o: ../win/java/winjava.c $(HACK_H)
+	$(CC) $(CFLAGS) -c ../win/java/winjava.c
 Window.o: ../win/X11/Window.c ../include/xwindowp.h ../include/xwindow.h \
 		$(CONFIG_H)
 	$(CC) $(CFLAGS) -c ../win/X11/Window.c
