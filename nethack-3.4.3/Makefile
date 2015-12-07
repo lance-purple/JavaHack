@@ -198,6 +198,7 @@ dofiles:
 	-$(CHOWN) $(GAMEUID) $(SHELLDIR)/$(GAME)
 	$(CHGRP) $(GAMEGRP) $(SHELLDIR)/$(GAME)
 	chmod $(EXEPERM) $(SHELLDIR)/$(GAME)
+	cp -r ../classes/rec /usr/games/lib/nethackdir
 
 dofiles-dlb: check-dlb
 	( cd dat ; cp nhdat $(DATNODLB) $(GAMEDIR) )

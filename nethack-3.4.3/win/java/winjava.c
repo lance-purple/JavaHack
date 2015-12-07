@@ -96,6 +96,22 @@ void java_init_nhwindows(int* argcp, char** argv) {
             printf("\nFailed to Launch JVM\n");
             exit(jc);
         }
+
+        jclass class = (*jni_env)->FindClass(jni_env, "rec/games/roguelike/nh4j/ui/GUI");
+        if ((*jni_env)->ExceptionCheck(jni_env)) {
+            (*jni_env)->ExceptionDescribe(jni_env);
+        }
+
+        jmethodID methodID = (*jni_env)->GetStaticMethodID(jni_env, class, "start", "()V");
+        if ((*jni_env)->ExceptionCheck(jni_env)) {
+            (*jni_env)->ExceptionDescribe(jni_env);
+        }
+
+        (*jni_env)->CallStaticVoidMethod(jni_env, class, methodID);
+        if ((*jni_env)->ExceptionCheck(jni_env)) {
+            (*jni_env)->ExceptionDescribe(jni_env);
+        }
+
     }
     else {
         fprintf(stderr, "\nJAVA_HOME must be specified\n");
@@ -123,7 +139,6 @@ void java_exit_nhwindows(const char* str) {
         if (0 != jc) {
             fprintf(stderr, "\nFailed to destroy JVM: %d\n", jc);
         }
-fprintf(stderr, "\nLJP destroyed JVM\n");
     }
 }
 
